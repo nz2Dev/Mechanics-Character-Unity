@@ -13,7 +13,7 @@ public class MovementController : MonoBehaviour {
         character = GetComponent<Character>();
     }
 
-    public void FixedUpdate() {
+    public void Update() {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         character.Move(new Vector3(horizontal, 0, vertical));
@@ -31,6 +31,14 @@ public class MovementController : MonoBehaviour {
 
         if (Input.GetMouseButtonUp(1)) {
             character.LookForward();
+        }
+
+        if (Input.GetMouseButtonDown(0)) {
+            character.Aim();
+        }
+
+        if (Input.GetMouseButtonUp(0)) {
+            character.Attack();
         }
     }
 

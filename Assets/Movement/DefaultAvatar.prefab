@@ -156,8 +156,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4542946151188122}
   - component: {fileID: 95324347766029430}
-  - component: {fileID: 114447159075200522}
   - component: {fileID: 114867200033616112}
+  - component: {fileID: 114187178973993278}
+  - component: {fileID: 54452156833419546}
+  - component: {fileID: 136536514396583464}
   m_Layer: 0
   m_Name: DefaultAvatar
   m_TagString: Untagged
@@ -2541,6 +2543,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1770430192095204}
   m_Mesh: {fileID: 4300000, guid: 2ab0893f5bba9b243b65e309e78089d0, type: 3}
+--- !u!54 &54452156833419546
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1171567674601164}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!95 &95324347766029430
 Animator:
   serializedVersion: 3
@@ -2550,7 +2567,7 @@ Animator:
   m_GameObject: {fileID: 1171567674601164}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2ab0893f5bba9b243b65e309e78089d0, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fdf8b29f6afc17d42b514d41195a9bb3, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -2559,7 +2576,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114447159075200522
+--- !u!114 &114187178973993278
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2573,10 +2590,11 @@ MonoBehaviour:
   stationarTurnSpeed: 180
   movingTurnSpeed: 360
   platformTransform: {fileID: 4116622801631976}
+  spineTransform: {fileID: 4157290896033674}
   headTransform: {fileID: 4018693648952046}
-  forwardHeadingBoundsAngle: 60
-  backwardHeadingAngle: 120
-  headRotationAngle: 60
+  headRotationAngle: 45
+  headFollowRotationSpeed: 1
+  undefinedMultiplyer: 1
 --- !u!114 &114867200033616112
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2588,7 +2606,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b5fc92f16f5454fbf6f1b4424fb72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 114447159075200522}
+--- !u!136 &136536514396583464
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1171567674601164}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.22
+  m_Height: 1.63
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.78, z: 0}
 --- !u!137 &137320627619760378
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class Character : MonoBehaviour {
     [SerializeField] private float stationarTurnSpeed = 180;
     [SerializeField] private float movingTurnSpeed = 360;
     [SerializeField] private Transform platformTransform;
+    [SerializeField] private Transform spineTransform;
     [SerializeField] private Transform headTransform;
 
     [Range(1, 180)]
@@ -21,10 +23,14 @@ public class Character : MonoBehaviour {
     private Vector3 worldHeadForward;
 
     private bool headControlState;
+    private bool aimState;
+    private Quaternion spineRotationBuffer;
     private Vector3 lookPoint;
 
     [SerializeField]
     private float headFollowRotationSpeed = 1;
+    [SerializeField]
+    private float undefinedMultiplyer = 2;
 
     private void Start() {
         animator = GetComponent<Animator>();
@@ -62,16 +68,36 @@ public class Character : MonoBehaviour {
     public void LookForward() {
         headTransform.localRotation = Quaternion.identity;
         headControlState = false;
+        aimState = false;
         animator.SetBool("faceFocuse", headControlState);
     }
 
-    private void Update() {
-        if (headControlState) {
-            float directionHeadAngle = Vector3.Angle(worldHeadForward, transform.forward);
+    public void Aim() {
+        animator.SetTrigger("aim");
+        aimState = true;
+        // TODO: character hips should look at point, maybe using lerp smooth, but should do it slower that face
+    }
 
-            float rotationInfluence = Time.deltaTime * Mathf.Pow(directionHeadAngle / headRotationAngle, 2);
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(worldHeadForward, Vector3.up), rotationInfluence);
-            
+    public void Attack() {
+        animator.SetTrigger("attack");
+        aimState = false;
+        // TODO: freez head and hips \and platform/ during attack animation?
+    }
+
+    private void LateUpdate() {
+        Quaternion headRotation = Quaternion.LookRotation(worldHeadForward, Vector3.up);
+        float directionHeadAngle = Vector3.Angle(worldHeadForward, transform.forward);
+
+        if (headControlState) {
+            float headTurnCoeff = directionHeadAngle / headRotationAngle;
+            //if (aimState) {
+            //    headTurnCoeff = headTurnCoeff * undefinedMultiplyer;
+            //}
+
+            float rotationInfluence = Time.deltaTime * Mathf.Pow(headTurnCoeff, 2);
+
+            transform.rotation = Quaternion.Lerp(transform.rotation, headRotation, rotationInfluence);
+
             // if (turnTrigger != null) {
             //    AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
             //    if (stateInfo.IsName("Focuse Movement") && !animator.IsInTransition(0)) {
@@ -79,9 +105,17 @@ public class Character : MonoBehaviour {
             //    }
             // }
         }
-    }
 
-    private void LateUpdate() {
+        if (aimState) {
+            //float hipsRotationInfluence = Time.deltaTime * (directionHeadAngle / headRotationAngle) * 3;
+            //Debug.Log("aim influence: " + hipsRotationInfluence);
+            //spineRotationBuffer = Quaternion.Lerp(spineRotationBuffer, headRotation, hipsRotationInfluence);
+            //spineTransform.rotation = spineRotationBuffer;
+
+            headRotation = headRotation * spineTransform.localRotation;
+            spineTransform.rotation = headRotation;
+        }
+
         if (headControlState) {
             // look in front of the point
             headTransform.LookAt(lookPoint);
