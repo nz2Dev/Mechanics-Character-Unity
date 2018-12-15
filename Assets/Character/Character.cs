@@ -12,25 +12,19 @@ public class Character : MonoBehaviour {
     [SerializeField] private Transform platformTransform;
     [SerializeField] private Transform spineTransform;
     [SerializeField] private Transform headTransform;
-
-    [Range(1, 180)]
-    [SerializeField] private float headRotationAngle = 100;
+    [SerializeField] [Range(1, 180)] private float headRotationAngle = 100;
+    [SerializeField] private float headFollowRotationSpeed = 1;
+    [SerializeField] private float undefinedMultiplyer = 2;
 
     private Animator animator;
+
     private Vector3 localMoveDirection;
+    private Vector3 worldHeadForward;
+    private Vector3 lookPoint;
     private float turnAmount;
     private float forwardAmount;
-    private Vector3 worldHeadForward;
-
     private bool headControlState;
     private bool aimState;
-    private Quaternion spineRotationBuffer;
-    private Vector3 lookPoint;
-
-    [SerializeField]
-    private float headFollowRotationSpeed = 1;
-    [SerializeField]
-    private float undefinedMultiplyer = 2;
 
     private void Start() {
         animator = GetComponent<Animator>();
@@ -49,26 +43,30 @@ public class Character : MonoBehaviour {
             turnAmount = Mathf.Atan2(y: localX, x: localY);
             forwardAmount = localMoveDirection.z;
 
-            ApplyExtraTurnRotation();
+            // Aply extra turn rotation when we in circular move mode
+            float turnSpeed = Mathf.Lerp(stationarTurnSpeed, movingTurnSpeed, forwardAmount);
+            transform.Rotate(Vector3.up, turnAmount * Time.deltaTime * turnSpeed);
         } else {
             turnAmount = localMoveDirection.x;
             forwardAmount = localMoveDirection.z;
         }
 
-        ApplyAnimation();
+        // Aply animations
+        animator.SetFloat("forward", forwardAmount, DampTime, Time.deltaTime);
+        animator.SetFloat("turn", turnAmount, DampTime, Time.deltaTime);
     }
 
     public void LookAt(Vector3 point) {
         headControlState = true;
-        worldHeadForward = (point - transform.position).normalized;
         lookPoint = point;
+        worldHeadForward = (point - transform.position).normalized;
         animator.SetBool("faceFocuse", headControlState);
     }
 
     public void LookForward() {
-        headTransform.localRotation = Quaternion.identity;
         headControlState = false;
         aimState = false;
+        headTransform.localRotation = Quaternion.identity;
         animator.SetBool("faceFocuse", headControlState);
     }
 
@@ -90,41 +88,23 @@ public class Character : MonoBehaviour {
 
         if (headControlState) {
             float headTurnCoeff = directionHeadAngle / headRotationAngle;
-            //if (aimState) {
-            //    headTurnCoeff = headTurnCoeff * undefinedMultiplyer;
-            //}
-
             float rotationInfluence = Time.deltaTime * Mathf.Pow(headTurnCoeff, 2);
 
+            // Rotate character toward the head with head turn coeff, 
+            // so that if head is more away from body forward the faster we rotationg
             transform.rotation = Quaternion.Lerp(transform.rotation, headRotation, rotationInfluence);
-
-            // if (turnTrigger != null) {
-            //    AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            //    if (stateInfo.IsName("Focuse Movement") && !animator.IsInTransition(0)) {
-            //        animator.SetTrigger(turnTrigger);
-            //    }
-            // }
         }
 
         if (aimState) {
-            //float hipsRotationInfluence = Time.deltaTime * (directionHeadAngle / headRotationAngle) * 3;
-            //Debug.Log("aim influence: " + hipsRotationInfluence);
-            //spineRotationBuffer = Quaternion.Lerp(spineRotationBuffer, headRotation, hipsRotationInfluence);
-            //spineTransform.rotation = spineRotationBuffer;
-
+            // Adding head rotation to spine rotation so that now hi is facing forward when aiming
             headRotation = headRotation * spineTransform.localRotation;
             spineTransform.rotation = headRotation;
         }
 
         if (headControlState) {
-            // look in front of the point
+            // But head looking toward the point immediately
+            // It should go after spine transform rotation is set
             headTransform.LookAt(lookPoint);
-            // headTransform.Rotate(new Vector3(0, 90, -90), Space.Self);
-            Debug.DrawLine(headTransform.position, lookPoint, Color.black);
-
-            // get direction of head in world space
-            // for Ethan -Vector3.up direction is head local forward after rotation
-            // worldHeadForward = Vector3.Scale(headTransform.TransformDirection(Vector3.forward), new Vector3(1, 0, 1)).normalized;
         }
     }
 
@@ -151,22 +131,16 @@ public class Character : MonoBehaviour {
             Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, transform.position + worldHeadForward * lineDistance / 2);
+
+            // line toward look point
+            Gizmos.color = Color.black;
+            Gizmos.DrawLine(headTransform.position, lookPoint);
         }
 
         // Move indicator
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.color = Color.green;
         Gizmos.DrawLine(Vector3.zero, localMoveDirection);
-    }
-
-    private void ApplyAnimation() {
-        animator.SetFloat("forward", forwardAmount, DampTime, Time.deltaTime);
-        animator.SetFloat("turn", turnAmount, DampTime, Time.deltaTime);
-    }
-
-    private void ApplyExtraTurnRotation() {
-        float turnSpeed = Mathf.Lerp(stationarTurnSpeed, movingTurnSpeed, forwardAmount);
-        transform.Rotate(Vector3.up, turnAmount * Time.deltaTime * turnSpeed);
     }
 
 }
