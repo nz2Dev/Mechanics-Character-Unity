@@ -16,6 +16,8 @@ public class Character : MonoBehaviour {
     [SerializeField] private float headFollowRotationSpeed = 1;
     [SerializeField] private float undefinedMultiplyer = 2;
 
+    [SerializeField] private WeaponDirector weaponDirector;
+
     private Animator animator;
 
     private Vector3 localMoveDirection;
@@ -70,13 +72,29 @@ public class Character : MonoBehaviour {
         animator.SetBool("faceFocuse", headControlState);
     }
 
+    public void PrepareAttack() {
+        if (weaponDirector != null) {
+            weaponDirector.OnPrepare();
+        }
+
+        animator.SetTrigger("reload");
+    }
+
     public void Aim() {
+        if (weaponDirector != null) {
+            weaponDirector.OnAim();
+        }
+
         animator.SetTrigger("aim");
         aimState = true;
         // TODO: character hips should look at point, maybe using lerp smooth, but should do it slower that face
     }
 
     public void Attack() {
+        if (weaponDirector != null) {
+            weaponDirector.OnShot();
+        }
+
         animator.SetTrigger("attack");
         aimState = false;
         // TODO: freez head and hips \and platform/ during attack animation?
