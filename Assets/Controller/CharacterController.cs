@@ -45,6 +45,9 @@ public class CharacterController : MonoBehaviour {
 
         if (Input.GetMouseButtonUp(0)) {
             character.Attack();
+            if (Input.GetMouseButton(1)) {
+                character.PrepareAttack();
+            }
         }
     }
 
