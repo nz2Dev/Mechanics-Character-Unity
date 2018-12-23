@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterBowDirector : WeaponDirector {
+[RequireComponent(typeof(Character))]
+public class CharacterBowDirector : MonoBehaviour {
 
     public Bow bow;
     public Arrow arrowPrefab;
@@ -16,29 +17,31 @@ public class CharacterBowDirector : WeaponDirector {
         character = GetComponent<Character>();
     }
 
-    public override void OnPrepare() {
-        // Before stick to the bowstring, we should instantiate arrow,
-        // And stick it to the right hand
+    public void OnCatchArrow() {
         RightHand rightHand = character.GetComponentInChildren<RightHand>();
         arrowInUse = Instantiate(arrowPrefab, rightHand.transform);
         arrowInUse.transform.localPosition = arrowOrientation.position;
         arrowInUse.transform.localRotation = arrowOrientation.rotation;
-
-        // Then bowstring should be sticked at the end of reload animation
-        // ... before doing that here, we first need to figure out when animation is stop playing
-        // or when some event occur, so for now we stick only after onAim is called
     }
 
-    public override void OnAim() {
+    public void OnCatchBowstring() {
         RightHand rightHand = character.GetComponentInChildren<RightHand>();
-        bow.StickTo(rightHand.transform);
+        bow.StickBowstringTo(rightHand.transform);
     }
 
-    public override void OnShot() {
+    public void OnReleaseBowstringAndArrow() {
         bow.Release();
         arrowInUse.Launch(character.transform.forward);
         arrowInUse.transform.parent = null;
         StartCoroutine(PostLaunch());
+    }
+
+    public void OnReleaseBowstring() {
+        bow.UnstickBowstring();
+    }
+
+    public void OnReleaseArrow() {
+        Destroy(arrowInUse.gameObject);
     }
 
     private IEnumerator PostLaunch() {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,11 +16,16 @@ public class Bow : MonoBehaviour {
     private bool releasing;
     private bool sticking;
 
-    public void StickTo(Transform handler) {
+    public void StickBowstringTo(Transform handler) {
         handlerTransform = handler;
         manipulatorStartPosition = manipulator.transform.localPosition;
         releasing = false;
         sticking = true;
+    }
+
+    public void UnstickBowstring() {
+        // TODO consider using different approach, because just releasing might be buggy
+        Release();
     }
 
     public void Release() {

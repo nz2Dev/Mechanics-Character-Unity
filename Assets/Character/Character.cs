@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
+    public const int UpperLayerIndex = 2;
+    public const string UpperLayerIdleStateInfoName = "Idle";
+
     private const float DampTime = 0.1f;
 
     [SerializeField] private float stationarTurnSpeed = 180;
@@ -28,8 +31,21 @@ public class Character : MonoBehaviour {
     private bool headControlState;
     private bool aimState;
 
+    private AttackStateMediator attackMediator;
+
     private void Start() {
         animator = GetComponent<Animator>();
+
+        // It is not a good idea to initialize mediator here, 
+        // but rather taking it as dependencies in some way or have some mechanizm to set it dynamically to have posibility to extend it in future.
+        // But for now, let it be like that, hardcoded.
+        attackMediator = new AttackStateMediator {
+            idleState = new IdleAttackState(),
+            preparingState = new PreparingAttackState(),
+            ambiguousPreparingAttackState = new AmbiguousPreparingAttackState(),
+            aimingState = new AimingAttackState(),
+            releasingState = new ReleasingAttackState(),
+        };
     }
 
     public void Move(Vector3 direction) {
@@ -72,33 +88,50 @@ public class Character : MonoBehaviour {
         animator.SetBool("faceFocuse", headControlState);
     }
 
-    public void PrepareAttack() {
-        if (weaponDirector != null) {
-            weaponDirector.OnPrepare();
-        }
+    public void PrepareAttack(bool prepare) {
+        // It will be moved to implementation of attackDirector events handling
+        // And be called from there.
+        // if (weaponDirector != null) {
+        //     weaponDirector.OnPrepare();
+        // }
 
-        animator.SetTrigger("reload");
+        // The same for animations trigger. moreover, maybe this should be called from weapon director implementation.
+        // animator.SetTrigger("reload");
+
+        // attackMediator.PrepareAttack(prepare);
+        animator.SetBool("prepared", prepare);
+
+        aimState = animator.GetBool("aimed") || prepare;
     }
 
-    public void Aim() {
-        if (weaponDirector != null) {
-            weaponDirector.OnAim();
-        }
+    public void AimAttack(bool aim) {
+        // if (weaponDirector != null) {
+        //     weaponDirector.OnAim();
+        // }
 
-        animator.SetTrigger("aim");
-        aimState = true;
+        // animator.SetTrigger("aim");
+        
+        // Thre same here as in PrepareAttack()
+        // attackMediator.AimAttack(aim);
+        animator.SetBool("aimed", aim);
+
+        aimState = aim || animator.GetBool("prepared");
+
         // TODO: character hips should look at point, maybe using lerp smooth, but should do it slower that face
     }
 
-    public void Attack() {
-        if (weaponDirector != null) {
-            weaponDirector.OnShot();
-        }
+    // public void Attack() {
+    // if (weaponDirector != null) {
+    //     weaponDirector.OnShot();
+    // }
 
-        animator.SetTrigger("attack");
-        aimState = false;
-        // TODO: freez head and hips \and platform/ during attack animation?
-    }
+    // animator.SetTrigger("attack");
+    // aimState = false;
+
+    // NOTE: should be handled by attackMediator after some of Prepare or Aim calls.
+
+    // TODO: freez head and hips \and platform/ during attack animation?
+    // }
 
     private void LateUpdate() {
         Quaternion headRotation = Quaternion.LookRotation(worldHeadForward, Vector3.up);

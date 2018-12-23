@@ -10,7 +10,8 @@ public class CharacterController : MonoBehaviour {
     private Vector3 intersectPoint;
 
     private void Start() {
-        character = GetComponent<Character>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        character = player.GetComponent<Character>();
     }
 
     public void Update() {
@@ -29,25 +30,28 @@ public class CharacterController : MonoBehaviour {
             character.LookAt(intersectPoint);
         }
 
+        // Right DOWN
         if (Input.GetMouseButtonDown(1)) {
             // Together with looking at the point when right mouse click
             // We would also prepare our weapon
-            character.PrepareAttack();
+            character.PrepareAttack(true);
         }
 
+        // Right UP
         if (Input.GetMouseButtonUp(1)) {
+            // Seems that attack and move states should be handled at once 
             character.LookForward();
+            character.PrepareAttack(false);
         }
 
+        // Left DOWN
         if (Input.GetMouseButtonDown(0)) {
-            character.Aim();
+            character.AimAttack(true);
         }
 
+        // Left UP
         if (Input.GetMouseButtonUp(0)) {
-            character.Attack();
-            if (Input.GetMouseButton(1)) {
-                character.PrepareAttack();
-            }
+            character.AimAttack(false);
         }
     }
 

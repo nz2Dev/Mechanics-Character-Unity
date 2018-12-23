@@ -9,7 +9,7 @@ public class BowstringTester : MonoBehaviour {
 
     [ContextMenu("Stick")]
     public void Stick() {
-        bow.StickTo(handler.transform);
+        bow.StickBowstringTo(handler.transform);
     }
 
     [ContextMenu("Release")]
