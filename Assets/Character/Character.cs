@@ -31,21 +31,8 @@ public class Character : MonoBehaviour {
     private bool headControlState;
     private bool aimState;
 
-    private AttackStateMediator attackMediator;
-
     private void Start() {
         animator = GetComponent<Animator>();
-
-        // It is not a good idea to initialize mediator here, 
-        // but rather taking it as dependencies in some way or have some mechanizm to set it dynamically to have posibility to extend it in future.
-        // But for now, let it be like that, hardcoded.
-        attackMediator = new AttackStateMediator {
-            idleState = new IdleAttackState(),
-            preparingState = new PreparingAttackState(),
-            ambiguousPreparingAttackState = new AmbiguousPreparingAttackState(),
-            aimingState = new AimingAttackState(),
-            releasingState = new ReleasingAttackState(),
-        };
     }
 
     public void Move(Vector3 direction) {
@@ -75,17 +62,8 @@ public class Character : MonoBehaviour {
     }
 
     public void LookAt(Vector3 point) {
-        headControlState = true;
         lookPoint = point;
         worldHeadForward = (point - transform.position).normalized;
-        animator.SetBool("faceFocuse", headControlState);
-    }
-
-    public void LookForward() {
-        headControlState = false;
-        aimState = false;
-        headTransform.localRotation = Quaternion.identity;
-        animator.SetBool("faceFocuse", headControlState);
     }
 
     public void PrepareAttack(bool prepare) {
@@ -99,9 +77,14 @@ public class Character : MonoBehaviour {
         // animator.SetTrigger("reload");
 
         // attackMediator.PrepareAttack(prepare);
+        aimState = animator.GetBool("aimed") && prepare;
         animator.SetBool("prepared", prepare);
 
-        aimState = animator.GetBool("aimed") || prepare;
+        headControlState = prepare || animator.GetBool("aimed");
+        if (!headControlState) {
+            headTransform.localRotation = Quaternion.identity;
+        }
+        animator.SetBool("faceFocuse", headControlState);
     }
 
     public void AimAttack(bool aim) {
@@ -113,9 +96,14 @@ public class Character : MonoBehaviour {
         
         // Thre same here as in PrepareAttack()
         // attackMediator.AimAttack(aim);
+        aimState = aim && animator.GetBool("prepared");
         animator.SetBool("aimed", aim);
 
-        aimState = aim || animator.GetBool("prepared");
+        headControlState = aim || animator.GetBool("prepared");
+        if (!headControlState) {
+            headTransform.localRotation = Quaternion.identity;
+        }
+        animator.SetBool("faceFocuse", headControlState);
 
         // TODO: character hips should look at point, maybe using lerp smooth, but should do it slower that face
     }

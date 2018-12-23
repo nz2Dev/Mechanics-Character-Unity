@@ -19,7 +19,7 @@ public class CharacterController : MonoBehaviour {
         float vertical = Input.GetAxis("Vertical");
         character.Move(new Vector3(horizontal, 0, vertical));
 
-        if (Input.GetMouseButton(1)) {
+        if (Input.GetMouseButton(1) || Input.GetMouseButton(0)) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             float enterDistance;
 
@@ -40,7 +40,6 @@ public class CharacterController : MonoBehaviour {
         // Right UP
         if (Input.GetMouseButtonUp(1)) {
             // Seems that attack and move states should be handled at once 
-            character.LookForward();
             character.PrepareAttack(false);
         }
 
