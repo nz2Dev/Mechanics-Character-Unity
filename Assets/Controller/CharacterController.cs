@@ -29,29 +29,6 @@ public class CharacterController : MonoBehaviour {
 
             character.LookAt(intersectPoint);
         }
-
-        // Right DOWN
-        if (Input.GetMouseButtonDown(1)) {
-            // Together with looking at the point when right mouse click
-            // We would also prepare our weapon
-            character.PrepareAttack(true);
-        }
-
-        // Right UP
-        if (Input.GetMouseButtonUp(1)) {
-            // Seems that attack and move states should be handled at once 
-            character.PrepareAttack(false);
-        }
-
-        // Left DOWN
-        if (Input.GetMouseButtonDown(0)) {
-            character.AimAttack(true);
-        }
-
-        // Left UP
-        if (Input.GetMouseButtonUp(0)) {
-            character.AimAttack(false);
-        }
     }
 
 }

@@ -10,11 +10,52 @@ public class CharacterBowDirector : MonoBehaviour {
     public Transform arrowOrientation;
 
     private Character character;
+    private Animator animator;
 
     private Arrow arrowInUse;
+    private bool disablingSupperFocusModeImmunitet;
+    private bool changeSupperFocuseOnLaunched;
+    private bool supperFoucseChangeBuffer;
 
     private void Start() {
         character = GetComponent<Character>();
+        animator = GetComponent<Animator>();
+    }
+
+    public void Aim(bool aim) {
+        if (!aim && animator.GetBool("prepared")) {
+            disablingSupperFocusModeImmunitet = true;
+        }
+
+        // Set upper layer animation related to bow
+        animator.SetBool("aimed", aim);
+        bool aimState = aim && animator.GetBool("prepared");
+        SetSupperFocus(aimState);
+
+        // Set base layer animation related to character movement
+        bool focusState = aim || animator.GetBool("prepared");
+        character.SetFocusMoveState(focusState);
+    }
+
+    public void Prepare(bool prepare) {
+        // Set upper layer animation related to bow
+        animator.SetBool("prepared", prepare);
+        bool aimState = animator.GetBool("aimed") && prepare;
+        SetSupperFocus(aimState);
+
+        // Set base layer animation related to character movement
+        bool focusState = prepare || animator.GetBool("aimed");
+        character.SetFocusMoveState(focusState);
+    }
+
+    private void SetSupperFocus(bool set) {
+        if (!set && disablingSupperFocusModeImmunitet) {
+            changeSupperFocuseOnLaunched = true;
+            supperFoucseChangeBuffer = set;
+            return;
+        }
+        changeSupperFocuseOnLaunched = false;
+        character.SetSuperFocusMoveState(set);
     }
 
     public void OnCatchArrow() {
@@ -48,6 +89,15 @@ public class CharacterBowDirector : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
         arrowInUse.Launched();
         arrowInUse = null;
+
+        if (disablingSupperFocusModeImmunitet) {
+            disablingSupperFocusModeImmunitet = false;
+
+            if (changeSupperFocuseOnLaunched) {
+                changeSupperFocuseOnLaunched = false;
+                character.SetSuperFocusMoveState(supperFoucseChangeBuffer);
+            }
+        }
     }
 
 }

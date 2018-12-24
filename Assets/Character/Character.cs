@@ -66,60 +66,17 @@ public class Character : MonoBehaviour {
         worldHeadForward = (point - transform.position).normalized;
     }
 
-    public void PrepareAttack(bool prepare) {
-        // It will be moved to implementation of attackDirector events handling
-        // And be called from there.
-        // if (weaponDirector != null) {
-        //     weaponDirector.OnPrepare();
-        // }
-
-        // The same for animations trigger. moreover, maybe this should be called from weapon director implementation.
-        // animator.SetTrigger("reload");
-
-        // attackMediator.PrepareAttack(prepare);
-        aimState = animator.GetBool("aimed") && prepare;
-        animator.SetBool("prepared", prepare);
-
-        headControlState = prepare || animator.GetBool("aimed");
-        if (!headControlState) {
+    public void SetFocusMoveState(bool focusState) {
+        headControlState = focusState;
+        if (!focusState) {
             headTransform.localRotation = Quaternion.identity;
         }
-        animator.SetBool("faceFocuse", headControlState);
+        animator.SetBool("faceFocuse", focusState);
     }
 
-    public void AimAttack(bool aim) {
-        // if (weaponDirector != null) {
-        //     weaponDirector.OnAim();
-        // }
-
-        // animator.SetTrigger("aim");
-        
-        // Thre same here as in PrepareAttack()
-        // attackMediator.AimAttack(aim);
-        aimState = aim && animator.GetBool("prepared");
-        animator.SetBool("aimed", aim);
-
-        headControlState = aim || animator.GetBool("prepared");
-        if (!headControlState) {
-            headTransform.localRotation = Quaternion.identity;
-        }
-        animator.SetBool("faceFocuse", headControlState);
-
-        // TODO: character hips should look at point, maybe using lerp smooth, but should do it slower that face
+    public void SetSuperFocusMoveState(bool superFocusState) {
+        aimState = superFocusState;
     }
-
-    // public void Attack() {
-    // if (weaponDirector != null) {
-    //     weaponDirector.OnShot();
-    // }
-
-    // animator.SetTrigger("attack");
-    // aimState = false;
-
-    // NOTE: should be handled by attackMediator after some of Prepare or Aim calls.
-
-    // TODO: freez head and hips \and platform/ during attack animation?
-    // }
 
     private void LateUpdate() {
         Quaternion headRotation = Quaternion.LookRotation(worldHeadForward, Vector3.up);
