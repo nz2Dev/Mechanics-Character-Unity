@@ -50,8 +50,11 @@ public class DoorOpeningDirector : MonoBehaviour {
 
     public void OnAnimatorIK(int layerIndex) {
         if (animator && door && doorTouched) {
-            animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-            animator.SetIKPosition(AvatarIKGoal.LeftHand, door.Handle.transform.position);
+            // TODO: figure out why force from the hand in this case is much less, and dumped at the end
+            // Maybe use some extra force at the end, or interpolate weight related to the time of event
+            
+            //animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
+            //animator.SetIKPosition(AvatarIKGoal.LeftHand, door.Handle.transform.position);
         }
     }
 

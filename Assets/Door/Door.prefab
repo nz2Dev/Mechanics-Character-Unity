@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 54072435394687748}
   - component: {fileID: 65041582884519366}
   - component: {fileID: 114924590568188490}
+  - component: {fileID: 59139445052345538}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -70,7 +71,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1394009481211980}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.31300002, y: 0.00047303902, z: -0.8698812}
+  m_LocalPosition: {x: 0.31300002, y: 0.00047303902, z: -1.62}
   m_LocalScale: {x: 0.18909618, y: 0.021307047, z: 0.7295835}
   m_Children: []
   m_Father: {fileID: 4096422916077422}
@@ -173,8 +174,42 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 126
+  m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!59 &59139445052345538
+HingeJoint:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515195581637086}
+  m_ConnectedBody: {fileID: 0}
+  m_Anchor: {x: -0.5, y: 0.5, z: 0}
+  m_Axis: {x: 0, y: 1, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: -0.016000003, y: 2.1560445, z: 2.03}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 10
+    damper: 1
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_Limits:
+    min: 0
+    max: 0
+    bounciness: 0
+    bounceMinVelocity: 1
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!65 &65041582884519366
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -195,7 +230,7 @@ BoxCollider:
   m_GameObject: {fileID: 1394009481211980}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -211,3 +246,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Handle: {fileID: 1394009481211980}
+  CatchRadius: 1.1
+  opennedPositionAngle: -90
+  closedPositionAngle: 0

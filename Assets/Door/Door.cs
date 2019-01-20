@@ -21,24 +21,35 @@ public class Door : MonoBehaviour {
     public void Open() {
         doorHingeJoint.useSpring = false;
         doorCollider.enabled = true;
+
+        var limits = doorHingeJoint.limits;
+        limits.min = -90;
+        limits.max = 90;
+        doorHingeJoint.limits = limits;
     }
 
     public void KeepOpened() {
-        doorHingeJoint.useSpring = true;
-        var spring = doorHingeJoint.spring;
-        spring.targetPosition = opennedPositionAngle;
-        spring.spring = 10;
-        doorHingeJoint.spring = spring;
+        doorHingeJoint.useSpring = false;
+        //var spring = doorHingeJoint.spring;
+        //spring.targetPosition = opennedPositionAngle;
+        //spring.spring = 10;
+        //doorHingeJoint.spring = spring;
         doorCollider.enabled = false;
+
+
+        var limits = doorHingeJoint.limits;
+        limits.min = -90;
+        limits.max = 90;
+        doorHingeJoint.limits = limits;
     }
 
     [ContextMenu("CloseTheDoor")]
     public void Close() {
-        doorHingeJoint.useSpring = true;
-        var spring = doorHingeJoint.spring;
-        spring.spring = 10000;
-        spring.targetPosition = closedPositionAngle;
-        doorHingeJoint.spring = spring;
+        doorHingeJoint.useSpring = false;
+        var limits = doorHingeJoint.limits;
+        limits.min = 0;
+        limits.max = 0;
+        doorHingeJoint.limits = limits;
         doorCollider.enabled = true;
     }
 
