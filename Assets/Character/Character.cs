@@ -19,8 +19,6 @@ public class Character : MonoBehaviour {
     [SerializeField] private float headFollowRotationSpeed = 1;
     [SerializeField] private float undefinedMultiplyer = 2;
 
-    [SerializeField] private WeaponDirector weaponDirector;
-
     private Animator animator;
 
     private Vector3 localMoveDirection;
