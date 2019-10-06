@@ -18,6 +18,7 @@ public class Door : MonoBehaviour {
         doorCollider = GetComponent<BoxCollider>();
     }
 
+    [ContextMenu("OpenTheDoor")] 
     public void Open() {
         doorHingeJoint.useSpring = false;
         doorCollider.enabled = true;

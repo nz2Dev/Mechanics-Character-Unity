@@ -23,6 +23,7 @@ public class CharacterDoorController : MonoBehaviour {
 	void Update () {
 	    if (doorOpeningDirector) {
             if (Input.GetKeyDown(KeyCode.F)) {
+                Debug.Log("Trigger open door");
                 doorOpeningDirector.OpenDoor(door);
             }
         }	
