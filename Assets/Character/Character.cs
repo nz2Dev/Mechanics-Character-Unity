@@ -93,6 +93,7 @@ public class Character : MonoBehaviour {
         if (aimState) {
             // Adding head rotation to spine rotation so that now hi is facing forward when aiming
             headRotation = headRotation * spineTransform.localRotation;
+            headRotation = headRotation * Quaternion.Euler(0, 10, 0);
             spineTransform.rotation = headRotation;
         }
 

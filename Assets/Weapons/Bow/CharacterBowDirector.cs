@@ -67,29 +67,33 @@ public class CharacterBowDirector : MonoBehaviour {
 
     public void OnCatchBowstring() {
         RightHand rightHand = character.GetComponentInChildren<RightHand>();
+        arrowInUse.collisionFreeObjects = new[] {character.GetComponentInChildren<LeftHand>().GetComponent<Collider>()};
         bow.StickBowstringTo(rightHand.transform);
+        bow.LoadArrow(arrowInUse);
     }
 
     public void OnReleaseBowstringAndArrow() {
         bow.Release();
-        arrowInUse.Launch(character.transform.forward);
-        arrowInUse.transform.parent = null;
         StartCoroutine(PostLaunch());
     }
 
     public void OnReleaseBowstring() {
         bow.UnstickBowstring();
+        // probably it would require to unload arrow, and set it back to right hand
     }
 
     public void OnReleaseArrow() {
-        Destroy(arrowInUse.gameObject);
+        // it should be called from animation when arrow is loaded back into quiver
+        // so probable its better to rename it appropriately
+        if (arrowInUse)
+        {
+            Destroy(arrowInUse.gameObject);
+        }
     }
 
     private IEnumerator PostLaunch() {
         yield return new WaitForSeconds(0.5f);
-        arrowInUse.Launched();
-        arrowInUse = null;
-
+        
         if (disablingSupperFocusModeImmunitet) {
             disablingSupperFocusModeImmunitet = false;
 
