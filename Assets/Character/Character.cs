@@ -18,7 +18,8 @@ public class Character : MonoBehaviour {
     [SerializeField] [Range(1, 180)] private float headRotationAngle = 100;
     [SerializeField] private float headFollowRotationSpeed = 1;
     [SerializeField] private float undefinedMultiplyer = 2;
-
+    [SerializeField] private int rotationInfluenceLimit = 1;
+    
     private Animator animator;
 
     private Vector3 localMoveDirection;
@@ -82,7 +83,7 @@ public class Character : MonoBehaviour {
 
         if (headControlState) {
             float headTurnCoeff = directionHeadAngle / headRotationAngle;
-            float rotationInfluence = Time.deltaTime * Mathf.Pow(headTurnCoeff, 2);
+            float rotationInfluence = Time.deltaTime * Mathf.Pow(Math.Min(headTurnCoeff, rotationInfluenceLimit), 2);
 
             // Rotate character toward the head with head turn coeff, 
             // so that if head is more away from body forward the faster we rotationg
