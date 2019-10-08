@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bow : MonoBehaviour {
+    
+    private const float ReleasedThreshold = 0.1f;
 
-    private const float ReleasedTreashold = 0.1f;
-
-    public Transform head;
-    public Manipulator manipulator;
-    public float bowstringStrength = 1;
-
-    private Transform handlerTransform;
+    private Transform manipulatorHolderTransform;
     private Vector3 manipulatorStartPosition;
+    private Arrow loadedArrow;
+
     private Vector3 returnDirection;
     private bool releasing;
     private bool sticking;
 
-    private Arrow loadedArrow;
+    [SerializeField] private Transform head;
+    [SerializeField] private Manipulator manipulator;
+    [SerializeField] private float bowstringStrength = 1;
     
-    public void StickBowstringTo(Transform handler) {
-        handlerTransform = handler;
+    public void StickBowstringTo(Transform holder) {
         manipulatorStartPosition = manipulator.transform.localPosition;
+        manipulatorHolderTransform = holder;
         releasing = false;
         sticking = true;
     }
@@ -30,49 +27,48 @@ public class Bow : MonoBehaviour {
     {
         arrow.transform.parent = manipulator.transform;
         loadedArrow = arrow;
-        loadedArrow.transform.localPosition = Vector3.zero;
     }
 
     public void UnstickBowstring() {
-        // TODO consider using different approach, because just releasing might be buggy
-        Release();
+        returnDirection = manipulatorStartPosition - manipulator.transform.localPosition;
+        releasing = true;
+        sticking = false;
     }
 
     public void Release() {
+        returnDirection = manipulatorStartPosition - manipulator.transform.localPosition;
         releasing = true;
         sticking = false;
-        returnDirection = manipulatorStartPosition - manipulator.transform.localPosition;
-        if (loadedArrow) 
+
+        if (loadedArrow) {
             loadedArrow.Launch();
+            loadedArrow = null;
+        }
     }
 
     private void Update() {
-        if (loadedArrow && sticking)
-        {
-            var headDirection = head.position - manipulator.transform.position;
-            loadedArrow.transform.position = 
-                manipulator.transform.position + headDirection.normalized / 2;
+        if (sticking) {
+            manipulator.transform.position = manipulatorHolderTransform.position;
             
-            loadedArrow.transform.rotation =
-                Quaternion.LookRotation(headDirection, manipulator.transform.up);
+            if (loadedArrow) {
+                var manipulatorTransform = manipulator.transform;
+                var manipulatorTransformPosition = manipulatorTransform.position;
+                var bowHeadDirection = head.position - manipulatorTransformPosition;
+                
+                // hotfix. moving arrow forward a bit, because their center is in the middle
+                loadedArrow.transform.position = manipulatorTransformPosition + bowHeadDirection.normalized / 2;
+                loadedArrow.transform.rotation = Quaternion.LookRotation(bowHeadDirection, manipulatorTransform.up);
+            }
         }
         
-        if (sticking) {
-            manipulator.transform.position = handlerTransform.position;
-        }
         if (releasing) {
-            manipulator.transform.localPosition = CalculateNextReleasePosition();
-            if (Vector3.Distance(manipulator.transform.localPosition, manipulatorStartPosition) < ReleasedTreashold) {
-                releasing = false;
+            manipulator.transform.localPosition += Time.deltaTime * bowstringStrength * returnDirection;
+            
+            if (Vector3.Distance(manipulator.transform.localPosition, manipulatorStartPosition) < ReleasedThreshold) {
                 manipulator.transform.localPosition = manipulatorStartPosition;
-                
-                
+                releasing = false;
             }
         }
     }
-
-    private Vector3 CalculateNextReleasePosition() {
-        return manipulator.transform.localPosition + returnDirection * Time.deltaTime * bowstringStrength;
-    }
-
+    
 }
