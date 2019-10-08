@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Tools;
+using UnityEditorInternal;
 using UnityEngine;
+using AnimatorController = UnityEditor.Animations.AnimatorController;
 
 public class Character : MonoBehaviour {
 
@@ -29,10 +32,17 @@ public class Character : MonoBehaviour {
     private float forwardAmount;
     private bool aimedSpineMode;
 
-    private void Start() {
+    private AnimationStatesChangesController stateChangesController;
+
+    private void Awake() {
         animator = GetComponent<Animator>();
+        stateChangesController = new AnimationStatesChangesController(animator);
     }
 
+    public AnimationStatesChangesController GetAnimationStatesChangesController() {
+        return stateChangesController;
+    }
+    
     public void Move(Vector3 direction) {
         if (direction.magnitude > 1) {
             direction.Normalize();
@@ -73,6 +83,22 @@ public class Character : MonoBehaviour {
 
     public void SetAimedSpineMode(bool modeEnabled) {
         aimedSpineMode = modeEnabled;
+    }
+
+    public void AimAttack(bool aim) {
+        animator.SetBool("aimed", aim);
+    }
+
+    public bool IsAttackAimed() {
+        return animator.GetBool("aimed");
+    }
+
+    public void PrepareAttack(bool prepare) {
+        animator.SetBool("prepared", prepare);
+    }
+
+    public bool IsAttackPrepared() {
+        return animator.GetBool("prepared");
     }
 
     private void LateUpdate() {
