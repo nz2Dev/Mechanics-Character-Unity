@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Tools;
-using UnityEditor;
+﻿using Tools;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -14,9 +10,7 @@ public class Projectile : MonoBehaviour {
     private bool enableDetecting;
     
     public Collider[] collisionFreeObjects;
-    public LayerMask collisionLayer;
-
-    private Quaternion launchRotation;
+    public LayerMask collisionLayerMask;
 
     private void Awake()
     {
@@ -24,10 +18,6 @@ public class Projectile : MonoBehaviour {
         physics.constraints = RigidbodyConstraints.FreezeAll;
         bounds = GetComponent<Collider>();
         bounds.enabled = false;
-    }
-
-    void Start() {
-        
     }
 
     public void Launch() {
@@ -38,29 +28,20 @@ public class Projectile : MonoBehaviour {
                 Physics.IgnoreCollision(bounds, collisionFreeObject);
             }
         }
-        
+
+        bounds.enabled = true;
+        transform.parent = null;
+
         physics.constraints = RigidbodyConstraints.FreezeRotation;
         physics.AddForce(transform.forward * 10, ForceMode.VelocityChange);
-        
-        transform.parent = null;
-        bounds.enabled = true;
-        
-//        launchRotation = transform.rotation;
     }
 
-    public void LateUpdate()
+    private void OnCollisionEnter(Collision collision)
     {
-//        if (launchRotation != null) {
-//            transform.rotation = launchRotation;
-//        }
-    }
-
-    private void OnCollisionEnter(Collision collision) {
-        if (!collisionLayer.Contains(collision.gameObject.layer))
+        if (collisionLayerMask.Contains(collision.gameObject.layer))
         {
-            return;
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 
 }
