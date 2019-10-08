@@ -28,6 +28,9 @@ ExportedObj/
 *.pdb
 *.opendb
 
+# Rider project files
+.idea/
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
