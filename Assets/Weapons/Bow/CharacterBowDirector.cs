@@ -34,7 +34,9 @@ public class CharacterBowDirector : MonoBehaviour {
 
         // Set base layer animation related to character movement
         bool focusState = aim || animator.GetBool("prepared");
-        character.SetFocusMoveState(focusState);
+        if (!focusState) {
+            character.LookStraight();
+        }
     }
 
     public void Prepare(bool prepare) {
@@ -45,7 +47,9 @@ public class CharacterBowDirector : MonoBehaviour {
 
         // Set base layer animation related to character movement
         bool focusState = prepare || animator.GetBool("aimed");
-        character.SetFocusMoveState(focusState);
+        if (!focusState) {
+            character.LookStraight();
+        }
     }
 
     private void SetSupperFocus(bool set) {
@@ -55,7 +59,7 @@ public class CharacterBowDirector : MonoBehaviour {
             return;
         }
         changeSupperFocuseOnLaunched = false;
-        character.SetSuperFocusMoveState(set);
+        character.SetAimedSpineMode(set);
     }
 
     public void OnCatchArrow() {
@@ -99,7 +103,7 @@ public class CharacterBowDirector : MonoBehaviour {
 
             if (changeSupperFocuseOnLaunched) {
                 changeSupperFocuseOnLaunched = false;
-                character.SetSuperFocusMoveState(supperFoucseChangeBuffer);
+                character.SetAimedSpineMode(supperFoucseChangeBuffer);
             }
         }
     }

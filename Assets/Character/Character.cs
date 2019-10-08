@@ -24,11 +24,10 @@ public class Character : MonoBehaviour {
 
     private Vector3 localMoveDirection;
     private Vector3 worldHeadForward;
-    private Vector3 lookPoint;
+    private Vector3? lookPoint;
     private float turnAmount;
     private float forwardAmount;
-    private bool headControlState;
-    private bool aimState;
+    private bool aimedSpineMode;
 
     private void Start() {
         animator = GetComponent<Animator>();
@@ -40,22 +39,22 @@ public class Character : MonoBehaviour {
         }
 
         localMoveDirection = transform.InverseTransformDirection(direction);
-        if (!headControlState) {
-            float localX = localMoveDirection.x;
-            float localY = localMoveDirection.z;
+        if (!lookPoint.HasValue) {
+            var localX = localMoveDirection.x;
+            var localY = localMoveDirection.z;
 
-            turnAmount = Mathf.Atan2(y: localX, x: localY);
+            turnAmount = Mathf.Atan2(localX, localY);
             forwardAmount = localMoveDirection.z;
 
-            // Aply extra turn rotation when we in circular move mode
-            float turnSpeed = Mathf.Lerp(stationarTurnSpeed, movingTurnSpeed, forwardAmount);
+            // Apply extra turn rotation when we in circular move mode
+            var turnSpeed = Mathf.Lerp(stationarTurnSpeed, movingTurnSpeed, forwardAmount);
             transform.Rotate(Vector3.up, turnAmount * Time.deltaTime * turnSpeed);
         } else {
             turnAmount = localMoveDirection.x;
             forwardAmount = localMoveDirection.z;
         }
 
-        // Aply animations
+        // Apply animations
         animator.SetFloat("forward", forwardAmount, DampTime, Time.deltaTime);
         animator.SetFloat("turn", turnAmount, DampTime, Time.deltaTime);
     }
@@ -63,44 +62,47 @@ public class Character : MonoBehaviour {
     public void LookAt(Vector3 point) {
         lookPoint = point;
         worldHeadForward = (point - transform.position).normalized;
+        animator.SetBool("faceFocuse", true);
     }
 
-    public void SetFocusMoveState(bool focusState) {
-        headControlState = focusState;
-        if (!focusState) {
-            headTransform.localRotation = Quaternion.identity;
-        }
-        animator.SetBool("faceFocuse", focusState);
+    public void LookStraight() {
+        lookPoint = null;
+        headTransform.localRotation = Quaternion.identity;
+        animator.SetBool("faceFocuse", false);
     }
 
-    public void SetSuperFocusMoveState(bool superFocusState) {
-        aimState = superFocusState;
+    public void SetAimedSpineMode(bool modeEnabled) {
+        aimedSpineMode = modeEnabled;
     }
 
     private void LateUpdate() {
-        Quaternion headRotation = Quaternion.LookRotation(worldHeadForward, Vector3.up);
-        float directionHeadAngle = Vector3.Angle(worldHeadForward, transform.forward);
+        var headRotation = Quaternion.LookRotation(worldHeadForward, Vector3.up);
+        var directionHeadAngle = Vector3.Angle(worldHeadForward, transform.forward);
 
-        if (headControlState) {
-            float headTurnCoeff = directionHeadAngle / headRotationAngle;
-            float rotationInfluence = Time.deltaTime * Mathf.Pow(Math.Min(headTurnCoeff, rotationInfluenceLimit), 2);
+        if (lookPoint.HasValue) {
+            var headTurnCoefficient = directionHeadAngle / headRotationAngle;
+            var rotationInfluence = Time.deltaTime * Mathf.Pow(Math.Min(headTurnCoefficient, rotationInfluenceLimit), 2);
 
-            // Rotate character toward the head with head turn coeff, 
-            // so that if head is more away from body forward the faster we rotationg
+            // Rotate character toward the head with head turn coefficient, 
+            // so that if head is more away from body forward the faster we rotate
             transform.rotation = Quaternion.Lerp(transform.rotation, headRotation, rotationInfluence);
         }
 
-        if (aimState) {
+        if (aimedSpineMode) {
             // Adding head rotation to spine rotation so that now hi is facing forward when aiming
-            headRotation = headRotation * spineTransform.localRotation;
-            headRotation = headRotation * Quaternion.Euler(0, 10, 0);
+            // todo ideally should also have some interpolation
+            headRotation *= spineTransform.localRotation;
+            
+            // hotfix. Adding extra rotation to compensate hands direction in aim animation
+            headRotation *= Quaternion.Euler(0, 10, 0);
+            
             spineTransform.rotation = headRotation;
         }
 
-        if (headControlState) {
-            // But head looking toward the point immediately
-            // It should go after spine transform rotation is set
-            headTransform.LookAt(lookPoint);
+        if (lookPoint.HasValue) {
+            // Because of head is a last child go
+            // It should go after spine transform rotation in order to have effect
+            headTransform.LookAt(lookPoint.Value);
         }
     }
 
@@ -108,7 +110,7 @@ public class Character : MonoBehaviour {
         float lineDistance = 10;
 
         Gizmos.matrix = transform.localToWorldMatrix;
-        if (headControlState) {
+        if (lookPoint.HasValue) {
             Gizmos.color = Color.black;
             // move cos/sin degress start
             float moveCosSinStart = +90;
@@ -130,7 +132,7 @@ public class Character : MonoBehaviour {
 
             // line toward look point
             Gizmos.color = Color.black;
-            Gizmos.DrawLine(headTransform.position, lookPoint);
+            Gizmos.DrawLine(headTransform.position, lookPoint.Value);
         }
 
         // Move indicator

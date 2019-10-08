@@ -19,22 +19,26 @@ public class CharacterSwordDirector : MonoBehaviour {
         // Set upper layer animation related to bow
         animator.SetBool("prepared", prepare);
         bool aimState = animator.GetBool("aimed") && prepare;
-        character.SetSuperFocusMoveState(aimState);
+        character.SetAimedSpineMode(aimState);
 
         // Set base layer animation related to character movement
         bool focusState = prepare || animator.GetBool("aimed");
-        character.SetFocusMoveState(focusState);
+        if (!focusState) {
+            character.LookStraight();
+        }
     }
 
     public void Aim(bool aim) {
         // Set upper layer animation related to bow
         animator.SetBool("aimed", aim);
         bool aimState = aim && animator.GetBool("prepared");
-        character.SetSuperFocusMoveState(aimState);
+        character.SetAimedSpineMode(aimState);
 
         // Set base layer animation related to character movement
         bool focusState = aim || animator.GetBool("prepared");
-        character.SetFocusMoveState(focusState);
+        if (!focusState) {
+            character.LookStraight();
+        }
     }
 
 }

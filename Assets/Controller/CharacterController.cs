@@ -28,9 +28,8 @@ public class CharacterController : MonoBehaviour {
             intersectPoint = ray.GetPoint(enterDistance);
 
             character.LookAt(intersectPoint);
-            character.SetFocusMoveState(true);
         } else {
-            character.SetFocusMoveState(false);
+            character.LookStraight();
         }
     }
 
