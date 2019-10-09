@@ -35,14 +35,15 @@ public class CharacterBowDirector : MonoBehaviour {
     }
 
     public void OnCatchArrow() {
-        RightHand rightHand = character.GetComponentInChildren<RightHand>();
+        var rightHand = character.GetComponentInChildren<RightHand>();
         arrowInUse = Instantiate(arrowPrefab, rightHand.transform);
-        arrowInUse.transform.localPosition = arrowOrientation.position;
-        arrowInUse.transform.localRotation = arrowOrientation.rotation;
+        var arrowTransform = arrowInUse.transform;
+        arrowTransform.localPosition = arrowOrientation.position;
+        arrowTransform.localRotation = arrowOrientation.rotation;
     }
 
     public void OnCatchBowstring() {
-        RightHand rightHand = character.GetComponentInChildren<RightHand>();
+        var rightHand = character.GetComponentInChildren<RightHand>();
         arrowInUse.collisionFreeObjects = new[] {character.GetComponentInChildren<LeftHand>().GetComponent<Collider>()};
         bow.StickBowstringTo(rightHand.transform);
         bow.LoadArrow(arrowInUse);
@@ -51,10 +52,19 @@ public class CharacterBowDirector : MonoBehaviour {
     public void OnReleaseBowstringAndArrow() {
         bow.Release();
     }
-    
+
     public void OnReleaseBowstring() {
+        arrowInUse = bow.UnloadArrow();
+        
+        if (arrowInUse) {
+            var arrowTransform = arrowInUse.transform;
+            var rightHand = character.GetComponentInChildren<RightHand>();
+            arrowTransform.parent = rightHand.transform;
+            arrowTransform.localPosition = arrowOrientation.position;
+            arrowTransform.localRotation = arrowOrientation.rotation;
+        }
+
         bow.UnstickBowstring();
-        // probably it would require to unload arrow, and set it back to right hand
     }
 
     public void OnReleaseArrow() {
@@ -64,4 +74,5 @@ public class CharacterBowDirector : MonoBehaviour {
             Destroy(arrowInUse.gameObject);
         }
     }
+
 }

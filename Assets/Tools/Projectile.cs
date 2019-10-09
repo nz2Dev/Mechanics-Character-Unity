@@ -1,4 +1,5 @@
-﻿using Tools;
+﻿using System.Collections;
+using Tools;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -36,6 +37,18 @@ public class Projectile : MonoBehaviour {
         physics.AddForce(transform.forward * 10, ForceMode.VelocityChange);
     }
 
+    public void Fall() {
+        physics.useGravity = true;
+        physics.constraints = RigidbodyConstraints.None;
+        bounds.enabled = true;
+        StartCoroutine(DestroyTimer());
+    }
+
+    private IEnumerator DestroyTimer() {
+        yield return new WaitForSeconds(5);
+        Destroy(gameObject);
+    }
+    
     private void OnCollisionEnter(Collision collision)
     {
         if (collisionLayerMask.Contains(collision.gameObject.layer))

@@ -14,12 +14,12 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - Damageable
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Union Projectile
+  - Enemy Projectile
+  - Union Character
+  - Enemy Character
+  - Environment
+  - Ground
   - 
   - 
   - 
