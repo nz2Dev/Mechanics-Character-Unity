@@ -72,13 +72,13 @@ public class Character : MonoBehaviour {
     public void LookAt(Vector3 point) {
         lookPoint = point;
         worldHeadForward = (point - transform.position).normalized;
-        animator.SetBool("faceFocuse", true);
+        animator.SetBool("focus", true);
     }
 
     public void LookStraight() {
         lookPoint = null;
         headTransform.localRotation = Quaternion.identity;
-        animator.SetBool("faceFocuse", false);
+        animator.SetBool("focus", false);
     }
 
     public void SetAimedSpineMode(bool modeEnabled) {
