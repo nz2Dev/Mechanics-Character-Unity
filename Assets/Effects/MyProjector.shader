@@ -71,7 +71,7 @@
 //                outColor = float4(input.normal.x, input.normal.y, input.normal.z, 1);
 //                outColor = float4(n.x, n.y, n.z, 1);
 
-                if (input.normal.z >= 0) {
+                if (input.normal.z >= 0 || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0) {
                     outColor = float4(0, 0, 0, 0);
                 }
                 
