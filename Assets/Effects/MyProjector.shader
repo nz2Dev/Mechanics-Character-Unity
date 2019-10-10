@@ -27,13 +27,13 @@
             struct appdata
             {
                 float4 vertex : POSITION;
-                float4 normal : NORMAL;
+                float3 normal : NORMAL;
             };
 
             struct v2f
             {
                 float4 uvProj : TEXCOORD0;
-                float4 normal : TEXCOORD1;
+                float3 normal : TEXCOORD1;
                 float4 vertex : SV_POSITION;
             };
 
@@ -65,14 +65,15 @@
                 fixed4 texColor = tex2D (_ShadowTex, uv);
                 fixed4 outColor;
                 outColor = _Color * texColor.a; 
-//                outColor = _Color; 
-                                
+//                outColor = _Color;
+
+//                float3 n = input.normal.xyz * 0.5 + 0.5;//normalize(input.normal.xyz);
 //                outColor = float4(input.normal.x, input.normal.y, input.normal.z, 1);
-//                if (input.normal.z > -_TestValue && input.normal.z < _TestValue) {
-//                    outColor = _Color;
-//                } else {
-//                    outColor = float4(0, 0, 0, 0);
-//                }
+//                outColor = float4(n.x, n.y, n.z, 1);
+
+                if (input.normal.z >= 0) {
+                    outColor = float4(0, 0, 0, 0);
+                }
                 
 //                if (uv.x < 0 || uv.x > _Max || uv.y < 0 || uv.y > _Max) {
 //                    outColor = float4(0, 0, 0, 0);
