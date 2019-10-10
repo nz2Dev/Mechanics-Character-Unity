@@ -25,7 +25,7 @@ public class CharacterAnimationHelper {
         character.SetAimedSpineMode(aimedMode);
     }
     
-    public void FreezeAimedSpineModeUntilAttackReleased(bool aimedSpineMode) {
+    public void FreezeAimedSpineModeUntilAttackReleased() {
         if (aimedSpineModeFrozen) {
             return;
         }
@@ -34,8 +34,8 @@ public class CharacterAnimationHelper {
         statesChangesController.AddAnimationStateChangesListener(releasingToPreparationStateChangesListener);
         
         aimedSpineModeFrozen = true;
-        lastAimedSpineModeValue = aimedSpineMode;
-        character.SetAimedSpineMode(aimedSpineMode);
+        lastAimedSpineModeValue = false;
+        character.SetAimedSpineMode(true);
     }
 
     private void OnStateChanged() {

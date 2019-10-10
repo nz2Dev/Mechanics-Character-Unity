@@ -21,8 +21,7 @@ public class CharacterBowDirector : MonoBehaviour {
         character.AimAttack(aim);
         if (character.IsAttackPrepared()) {
             if (!aim) {
-                animationHelper.FreezeAimedSpineModeUntilAttackReleased(true);
-                animationHelper.SetAimedSpineMode(false);
+                animationHelper.FreezeAimedSpineModeUntilAttackReleased();
             } else {
                 animationHelper.SetAimedSpineMode(true);
             }
@@ -34,7 +33,7 @@ public class CharacterBowDirector : MonoBehaviour {
         animationHelper.SetAimedSpineMode(character.IsAttackAimed() && prepare);
     }
 
-    public void OnCatchArrow() {
+    public void OnTakeArrow() {
         var rightHand = character.GetComponentInChildren<RightHand>();
         arrowInUse = Instantiate(arrowPrefab, rightHand.transform);
         var arrowTransform = arrowInUse.transform;
@@ -42,18 +41,18 @@ public class CharacterBowDirector : MonoBehaviour {
         arrowTransform.localRotation = arrowOrientation.rotation;
     }
 
-    public void OnCatchBowstring() {
+    public void OnGrabBowstring() {
         var rightHand = character.GetComponentInChildren<RightHand>();
         arrowInUse.collisionFreeObjects = new[] {character.GetComponentInChildren<LeftHand>().GetComponent<Collider>()};
         bow.StickBowstringTo(rightHand.transform);
         bow.LoadArrow(arrowInUse);
     }
 
-    public void OnReleaseBowstringAndArrow() {
+    public void OnReleaseLoadedBowstring() {
         bow.Release();
     }
 
-    public void OnReleaseBowstring() {
+    public void OnDropBowstring() {
         arrowInUse = bow.UnloadArrow();
         
         if (arrowInUse) {
@@ -67,12 +66,10 @@ public class CharacterBowDirector : MonoBehaviour {
         bow.UnstickBowstring();
     }
 
-    public void OnReleaseArrow() {
-        // it should be called from animation when arrow is loaded back into quiver
-        // so probable its better to rename it appropriately
-        if (arrowInUse) {
-            Destroy(arrowInUse.gameObject);
-        }
+    public void OnHideArrowToQuiver() {
+        // well, if this animation is plying, then arrow should be there!
+        // error otherwise
+        Destroy(arrowInUse.gameObject);
     }
 
 }
