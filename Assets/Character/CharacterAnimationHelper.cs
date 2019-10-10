@@ -55,7 +55,7 @@ public class CharacterAnimationHelper {
         }
 
         public override void OnStateExited(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            if (stateInfo.IsName("UpperLayer.Releasing")) {
+            if (stateInfo.IsName("Upper.Releasing")) {
                 callback();
             }
         }
