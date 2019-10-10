@@ -33,7 +33,10 @@ public class DoorOpeningDirector : MonoBehaviour {
     }
 
     public void OpenDoor(Door door) {
-        animator.SetTrigger("openDoor");
+        // it should not trigger this via animator, but rather from character component,
+        // and from there it should call public method that will set the trigger
+        // and override runtime animator so that it will place door opener in place of special movement animation clip
+        animator.SetTrigger("special");
         this.door = door;
     }
 
