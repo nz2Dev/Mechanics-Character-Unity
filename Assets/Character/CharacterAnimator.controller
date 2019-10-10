@@ -14,37 +14,37 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: turn
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: focus
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: prepared
+    m_Controller: {fileID: 0}
+  - m_Name: attack prepared
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: aimed
+    m_Controller: {fileID: 0}
+  - m_Name: attack aimed
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: special
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base
@@ -545,7 +545,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102026873479131604}
@@ -570,10 +570,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: aimed
+    m_ConditionEvent: attack aimed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102772237507562220}
@@ -648,10 +648,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: aimed
+    m_ConditionEvent: attack aimed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102224521448992498}
@@ -723,10 +723,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: aimed
+    m_ConditionEvent: attack aimed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102772237507562220}
@@ -798,10 +798,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: aimed
+    m_ConditionEvent: attack aimed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102016880356500186}
@@ -848,7 +848,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: aimed
+    m_ConditionEvent: attack aimed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102356214937789852}
@@ -873,10 +873,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: aimed
+    m_ConditionEvent: attack aimed
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102016581948325666}
@@ -901,7 +901,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102016880356500186}
@@ -926,10 +926,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: prepared
+    m_ConditionEvent: attack prepared
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: aimed
+    m_ConditionEvent: attack aimed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102122834056167136}

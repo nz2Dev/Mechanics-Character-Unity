@@ -86,19 +86,19 @@ public class Character : MonoBehaviour {
     }
 
     public void AimAttack(bool aim) {
-        animator.SetBool("aimed", aim);
+        animator.SetBool("attack aimed", aim);
     }
 
     public bool IsAttackAimed() {
-        return animator.GetBool("aimed");
+        return animator.GetBool("attack aimed");
     }
 
     public void PrepareAttack(bool prepare) {
-        animator.SetBool("prepared", prepare);
+        animator.SetBool("attack prepared", prepare);
     }
 
     public bool IsAttackPrepared() {
-        return animator.GetBool("prepared");
+        return animator.GetBool("attack prepared");
     }
 
     private void LateUpdate() {
