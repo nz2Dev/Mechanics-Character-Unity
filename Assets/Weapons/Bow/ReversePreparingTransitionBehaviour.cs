@@ -3,18 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomTransitionBehaviour : StateMachineBehaviour {
+public class ReversePreparingTransitionBehaviour : StateMachineBehaviour {
 
     public float MinReverseTime = 0.1f;
     // public float MaxStartAtTime = 0.9f;
     
     private bool reverse;
 
-    public void TransitsToReverse() {
+    public void Trigger() {
         reverse = true;
     }
 
-    public void ResetTransitToFlag() {
+    public void ResetFlag() {
         reverse = false;
     }
 

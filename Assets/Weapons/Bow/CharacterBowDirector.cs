@@ -31,13 +31,19 @@ public class CharacterBowDirector : MonoBehaviour {
     public void Prepare(bool prepare) {
         character.PrepareAttack(prepare);
         animationHelper.SetAimedSpineMode(character.IsAttackAimed() && prepare);
-        
-        var ctb = character.GetComponent<Animator>().GetBehaviour<CustomTransitionBehaviour>();
+
         if (!character.IsAttackAimed()) {
-            if (!prepare) {
-                ctb.TransitsToReverse();
-            } else {
-                ctb.ResetTransitToFlag();
+            var animator = character.GetComponent<Animator>();
+            var reversePreparing = animator.GetBehaviour<ReversePreparingTransitionBehaviour>();
+            var cancelReverse = animator.GetBehaviour<CancelingReversingTransitionBehaviour>();
+            var currentAnimatorStateInfo = animator.GetCurrentAnimatorStateInfo(1);
+
+            if (!prepare && currentAnimatorStateInfo.IsName("Preparing")) {
+                reversePreparing.Trigger();
+                cancelReverse.ResetFlag();
+            } else if (currentAnimatorStateInfo.IsName("ReversePreparing")) {
+                cancelReverse.Trigger();
+                reversePreparing.ResetFlag();
             }
         }
     }
@@ -63,7 +69,7 @@ public class CharacterBowDirector : MonoBehaviour {
 
     public void OnDropBowstring() {
         arrowInUse = bow.UnloadArrow();
-        
+
         if (arrowInUse) {
             var arrowTransform = arrowInUse.transform;
             var rightHand = character.GetComponentInChildren<RightHand>();
