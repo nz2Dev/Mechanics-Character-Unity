@@ -31,6 +31,15 @@ public class CharacterBowDirector : MonoBehaviour {
     public void Prepare(bool prepare) {
         character.PrepareAttack(prepare);
         animationHelper.SetAimedSpineMode(character.IsAttackAimed() && prepare);
+        
+        var ctb = character.GetComponent<Animator>().GetBehaviour<CustomTransitionBehaviour>();
+        if (!character.IsAttackAimed()) {
+            if (!prepare) {
+                ctb.TransitsToReverse();
+            } else {
+                ctb.ResetTransitToFlag();
+            }
+        }
     }
 
     public void OnTakeArrow() {
