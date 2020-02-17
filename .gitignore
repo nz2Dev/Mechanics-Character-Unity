@@ -9,6 +9,9 @@ Assets/Standard Assets
 Assets/Raw Mocap Data
 Assets/Plugins.meta
 
+# Particles Pack SampleScenes
+Assets/SampleScenes/
+
 # Visual Studio cache directory
 .vs/
 
